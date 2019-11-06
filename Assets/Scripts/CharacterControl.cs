@@ -19,7 +19,6 @@ public class CharacterControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
     }
 
     // Update is called once per frame
@@ -28,27 +27,45 @@ public class CharacterControl : MonoBehaviour
         Move();
     }
 
-    void Move()
+//    void Move()
+//    {
+//        float hor = Input.GetAxis("Horizontal");
+//        float vert = Input.GetAxis("Vertical");
+//
+//        anim.SetBool("isMoving", hor != 0 || vert != 0);
+//
+//        Vector3 direction = Vector3.zero;
+//        if (CC.isGrounded)
+//        {
+//            direction = new Vector3(hor, 0, vert);
+//            direction = transform.TransformDirection(direction);
+//            direction *= speed;
+//            if (Input.GetButton("Jump"))
+//            {
+//                direction.y = jumpSpeed;
+//            }
+//        }
+//
+//        direction.y -= gravity * Time.deltaTime;
+//        Vector3 translator = Vector3.zero;
+//        transform.Translate(translator, Camera.main.transform);
+//        CC.Move(direction * Time.deltaTime);
+//    }
+
+    Vector3 GetInput()
     {
-        float hor = Input.GetAxis("Horizontal");
-        float vert = Input.GetAxis("Vertical");
-
-        anim.SetBool("isMoving", hor != 0 || vert != 0);
-
-        Vector3 direction = Vector3.zero;
-        if (CC.isGrounded)
-        {
-            direction = new Vector3(hor, 0, vert);
-            direction = transform.TransformDirection(direction);
-            direction *= speed;
-            if (Input.GetButton("Jump"))
-            {
-                direction.y = jumpSpeed;
-            }
-        }
-        direction.y -= gravity * Time.deltaTime;
-        CC.Move(direction * Time.deltaTime);
+        return new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
     }
 
+    void Move()
+    {
+        Vector3 translator = GetInput();
+        anim.SetBool("isMoving", translator != Vector3.zero);
+        if (translator == Vector3.zero)
+        {
+            return;
+        }
 
+        transform.Translate(translator * Time.deltaTime * speed);
+    }
 }
