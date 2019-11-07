@@ -5,16 +5,15 @@ using UnityEngine;
 public abstract class UnitStats
 {
     public delegate void HealthHandler(UnitStats stats);
-    public event HealthHandler OnHPisZero;
-    public event HealthHandler OnDamageTaken;
+    public static event HealthHandler OnHPisZero;
+    public static event HealthHandler OnDamageTaken;
 
-    public float MaxHp { get; private set; }
-    public float CurrentHp { get; private set; }
-    public float Damage { get; private set; }
-
-    public float Speed { get; private set; }
-    public float Jump { get; private set; }
-    public float Gravity { get; private set; }
+    public float MaxHp { get; protected set; }
+    public float CurrentHp { get; protected set; }
+    
+    public float Damage { get; protected set; }
+    public float WalkSpeed { get; protected set; }
+    public float RunSpeed { get; protected set; }
 
     public virtual void TakeDamage(float damage)
     {
