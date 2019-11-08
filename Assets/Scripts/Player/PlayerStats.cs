@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PlayerStats : UnitStats
 {
-    public static event HealthHandler PlayerHPisZero;
+    public static event HealthHandler playerHPisZero;
+    public static event HealthHandler playerDamageTaken;
     public PlayerStats()
     {
         ResetStat();
@@ -17,5 +18,17 @@ public class PlayerStats : UnitStats
         WalkSpeed = 2;
         RunSpeed = 5;
         base.ResetStat();
+    }
+
+    public override void TakeDamage(float damage)
+    {
+        base.TakeDamage(damage);
+        playerDamageTaken?.Invoke(this);
+    }
+
+    public override void CheckIfDead()
+    {
+        base.CheckIfDead();
+        playerHPisZero?.Invoke(this);
     }
 }

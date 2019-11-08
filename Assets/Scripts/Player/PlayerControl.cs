@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
@@ -24,14 +22,13 @@ public class PlayerControl : MonoBehaviour
         animator = GetComponent<Animator>();
         cameraT = Camera.main.transform;
         stats = new PlayerStats();
+
         GameManager.StageChanged += OnStageChanged;
-        PlayerStats.PlayerHPisZero += PlayDead;
+        PlayerStats.playerHPisZero += PlayDead;
     }
 
     void Update()
     {
-        if (GM.IsGamePaused)
-            return;
         Move();
     }
 
@@ -42,8 +39,7 @@ public class PlayerControl : MonoBehaviour
 
     private void OnStageChanged(GameStage stage, bool isGamePaused)
     {
-        gameObject.SetActive(!isGamePaused);
-        animator.SetBool("isDead", true);
+        enabled = !isGamePaused;
     }
 
     Vector2 GetInput()

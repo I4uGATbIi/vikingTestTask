@@ -5,8 +5,8 @@ using UnityEngine;
 public abstract class UnitStats
 {
     public delegate void HealthHandler(UnitStats stats);
-    public static event HealthHandler OnHPisZero;
-    public static event HealthHandler OnDamageTaken;
+    public static event HealthHandler HPisZero;
+    public static event HealthHandler damageTaken;
 
     public float MaxHp { get; protected set; }
     public float CurrentHp { get; protected set; }
@@ -18,8 +18,8 @@ public abstract class UnitStats
     public virtual void TakeDamage(float damage)
     {
         CurrentHp -= damage;
-        IsHPZero();
-        OnDamageTaken(this);
+        CheckIfDead();
+        damageTaken(this);
     }
 
     public virtual void ResetStat()
@@ -27,11 +27,12 @@ public abstract class UnitStats
         CurrentHp = MaxHp;
     }
 
-    public virtual void IsHPZero()
+    public virtual void CheckIfDead()
     {
-        if(CurrentHp <= 0)
+        if(CurrentHp > 0)
         {
-            OnHPisZero(this);
+            return;
         }
+        HPisZero(this);
     }
 }
