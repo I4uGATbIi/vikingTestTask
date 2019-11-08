@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+        PlayerStats.playerHPisZero += OnPlayerDies;
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode sceneMode)
@@ -43,6 +44,11 @@ public class GameManager : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit(0);
+    }
+
+    public void OnPlayerDies(UnitStats stats)
+    {
+        CurrentStage = GameStage.EndGameMenu;
     }
 
     private Vector3 GetSpawnPosition()

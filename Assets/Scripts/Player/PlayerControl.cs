@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
@@ -24,17 +25,28 @@ public class PlayerControl : MonoBehaviour
         stats = new PlayerStats();
 
         GameManager.StageChanged += OnStageChanged;
-        PlayerStats.playerHPisZero += PlayDead;
+        PlayerStats.playerDamageTaken += OnDamageTaken;
+        PlayerStats.playerHPisZero += Die;
     }
 
     void Update()
     {
+        if (Input.GetButton("Fire1"))
+        {
+            StartCoroutine(Attack());
+        }
+#if UNITY_EDITOR
+        if (Input.GetButton("Fire2"))
+        {
+            StartCoroutine(PlayDamageAnim());
+        }
+#endif
         Move();
     }
 
-    private void PlayDead(UnitStats stats)
+    private void Die(UnitStats stats)
     {
-        PlayerStats playerStats = (PlayerStats) stats;
+        animator.SetBool("isDead", true);
     }
 
     private void OnStageChanged(GameStage stage, bool isGamePaused)
@@ -42,14 +54,29 @@ public class PlayerControl : MonoBehaviour
         enabled = !isGamePaused;
     }
 
-    Vector2 GetInput()
+    IEnumerator Attack()
     {
-        return new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        animator.SetBool("isAttacking", true);
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+        animator.SetBool("isAttacking", false);
+    }
+
+    void OnDamageTaken(UnitStats stats)
+    {
+        StartCoroutine(PlayDamageAnim());
+    }
+
+    IEnumerator PlayDamageAnim()
+    {
+        animator.SetBool("isDamageTaken", true);
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+        animator.SetBool("isDamageTaken", false);
     }
 
     void Move()
     {
-        Vector2 inputDir = GetInput().normalized;
+        Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        Vector2 inputDir = input.normalized;
 
         if (inputDir != Vector2.zero)
         {
