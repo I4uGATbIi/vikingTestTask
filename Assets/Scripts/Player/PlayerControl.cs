@@ -16,6 +16,7 @@ public class PlayerControl : MonoBehaviour
     Transform cameraT;
 
     private GameManager GM;
+    [SerializeField] private GameObject weapon;
 
     void Awake()
     {
@@ -27,6 +28,17 @@ public class PlayerControl : MonoBehaviour
         GameManager.StageChanged += OnStageChanged;
         PlayerStats.playerDamageTaken += OnDamageTaken;
         PlayerStats.playerHPisZero += Die;
+        weapon.GetComponent<WeaponAttack>().weaponCollision += OnWeaponCollision;
+    }
+
+    private void OnWeaponCollision(Collider other)
+    {
+        if (!other.gameObject.CompareTag("Enemy") || !animator.GetBool("isAttacking"))
+        {
+            return;
+        }
+
+        other.gameObject.GetComponent<MonsterContoll>().GetDamage(stats.Damage);
     }
 
     void Update()
@@ -35,12 +47,6 @@ public class PlayerControl : MonoBehaviour
         {
             StartCoroutine(Attack());
         }
-#if UNITY_EDITOR
-        if (Input.GetButton("Fire2"))
-        {
-            StartCoroutine(PlayDamageAnim());
-        }
-#endif
         Move();
     }
 
@@ -91,5 +97,10 @@ public class PlayerControl : MonoBehaviour
 
         animator.SetFloat("moveSpeed", inputDir == Vector2.zero ? 0 : running ? 1 : 0.5f);
         transform.Translate(transform.forward * currentSpeed * Time.deltaTime, Space.World);
+    }
+
+    public void GetDamage(float damage)
+    {
+        stats.TakeDamage(damage);
     }
 }

@@ -19,7 +19,7 @@ public abstract class UnitStats
     {
         CurrentHp -= damage;
         CheckIfDead();
-        damageTaken(this);
+        damageTaken?.Invoke(this);
     }
 
     public virtual void ResetStat()
@@ -33,6 +33,6 @@ public abstract class UnitStats
         {
             return;
         }
-        HPisZero(this);
+        HPisZero?.Invoke(this);
     }
 }

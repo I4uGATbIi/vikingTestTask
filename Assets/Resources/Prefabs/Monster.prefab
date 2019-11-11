@@ -436,9 +436,10 @@ GameObject:
   - component: {fileID: 5309604244889983261}
   - component: {fileID: 3555738290390729372}
   - component: {fileID: 3555738290390729373}
+  - component: {fileID: 7391806186717477377}
   m_Layer: 0
   m_Name: Monster
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -472,7 +473,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 2e7d0ccda195f8f419a6aaad06414a19, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -496,7 +497,7 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 2
+  m_Height: 1.5
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
@@ -512,6 +513,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7703bfdf0bf800549864b1a8b3f83450, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weapon: {fileID: 0}
+--- !u!136 &7391806186717477377
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1260685689952962164}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1.55
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.77, z: 0}
 --- !u!1 &1575806663920861901
 GameObject:
   m_ObjectHideFlags: 0
@@ -552,6 +568,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8015693814623512317}
+  - component: {fileID: 2017181356}
+  - component: {fileID: 2017181355}
   m_Layer: 0
   m_Name: Mutant:LeftHand
   m_TagString: Untagged
@@ -573,6 +591,31 @@ Transform:
   m_Father: {fileID: 4524606820550053477}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &2017181356
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2167206188366058788}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.8981845, y: 0.29604375, z: 0.25731122}
+  m_Center: {x: -0.1611517, y: -0.02890467, z: -0.12788066}
+--- !u!114 &2017181355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2167206188366058788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfc0996e5e33f134abdbff27aedea593, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2220978390918263121
 GameObject:
   m_ObjectHideFlags: 0

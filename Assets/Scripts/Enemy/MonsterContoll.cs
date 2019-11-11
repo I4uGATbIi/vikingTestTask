@@ -9,6 +9,9 @@ public class MonsterContoll : MonoBehaviour
     private MonsterStats monsterStats;
     private Animator animator;
 
+    [SerializeField]
+    private GameObject weapon;
+
     private void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
@@ -18,6 +21,17 @@ public class MonsterContoll : MonoBehaviour
         monsterStats.monsterHPisZero += MonsterStats_monsterHPisZero;
         GameManager.StageChanged += GameManager_StageChanged;
         navMeshAgent.speed = monsterStats.WalkSpeed;
+        weapon.GetComponent<WeaponAttack>().weaponCollision += OnWeaponCollision;
+    }
+
+    private void OnWeaponCollision(Collider other)
+    {
+        if (!other.CompareTag("Player") || !animator.GetBool("isAttacking"))
+        {
+            return;
+        }
+
+        other.gameObject.GetComponent<PlayerControl>().GetDamage(monsterStats.Damage);
     }
 
     void Update()
@@ -32,9 +46,16 @@ public class MonsterContoll : MonoBehaviour
         animator.SetFloat("moveSpeed", navMeshAgent.velocity.magnitude);
     }
 
+    public void GetDamage(float damage)
+    {
+        monsterStats.TakeDamage(damage);
+    }
+
     void AttackPlayer()
     {
-        animator.SetBool("isAttacking", navMeshAgent.remainingDistance <= 1.5);
+        if (Vector3.Distance(transform.position, GameObject.FindWithTag("Player").transform.position) <=
+            navMeshAgent.stoppingDistance)
+            animator.SetTrigger("isAttacking");
     }
 
     private void GameManager_StageChanged(GameStage changedStage, bool isGamePaused)
@@ -44,11 +65,19 @@ public class MonsterContoll : MonoBehaviour
 
     private void MonsterStats_monsterHPisZero(UnitStats stats)
     {
-        throw new System.NotImplementedException();
+        enabled = false;
+        animator.SetBool("isDead", true);
     }
 
     private void MonsterStats_monsterDamageTaken(UnitStats stats)
     {
-        throw new System.NotImplementedException();
+        StartCoroutine(PlayDamageTaken());
+    }
+
+    IEnumerator PlayDamageTaken()
+    {
+        animator.SetBool("isDamaged", true);
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+        animator.SetBool("isDamaged", false);
     }
 }

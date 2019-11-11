@@ -278,7 +278,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 9006883887804901364}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &5976526767188629244
 SkinnedMeshRenderer:
@@ -687,7 +687,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!136 &6014565627893485176
 CapsuleCollider:
@@ -717,6 +717,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   turnSmoothTime: 0.2
   speedSmoothTime: 0.1
+  weapon: {fileID: 9035253894689382235}
 --- !u!1 &2432910561402660988
 GameObject:
   m_ObjectHideFlags: 0
@@ -744,7 +745,6 @@ Transform:
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 5496221819217577248}
   - {fileID: 8132239579716592199}
   - {fileID: 1006639456061190716}
   - {fileID: 8486055644073295580}
@@ -939,7 +939,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 9006883887804901364}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &1471795399393923279
 SkinnedMeshRenderer:
@@ -1273,7 +1273,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 9006883887804901364}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &2445486698573547863
 SkinnedMeshRenderer:
@@ -1426,7 +1426,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 9006883887804901364}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &2279159111479224159
 SkinnedMeshRenderer:
@@ -1903,7 +1903,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 9006883887804901364}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &5734816118840039973
 SkinnedMeshRenderer:
@@ -2209,7 +2209,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 9006883887804901364}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &5784998037631517447
 SkinnedMeshRenderer:
@@ -2430,6 +2430,7 @@ Transform:
   - {fileID: 9024127175370292013}
   - {fileID: 4089566960026982446}
   - {fileID: 9092077544147956819}
+  - {fileID: 5496221819217577248}
   m_Father: {fileID: 918114621141667544}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2493,7 +2494,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 9006883887804901364}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &1302592718074998594
 SkinnedMeshRenderer:
@@ -2609,7 +2610,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 9006883887804901364}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &4812132964381184101
 SkinnedMeshRenderer:
@@ -2985,9 +2986,10 @@ GameObject:
   m_Component:
   - component: {fileID: 5496221819217577248}
   - component: {fileID: 615595590800156088}
+  - component: {fileID: 1466659882983102282}
   m_Layer: 0
   m_Name: BattleAxe_GEO
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2999,12 +3001,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9035253894689382235}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.8620293, y: -1.7398745, z: 0.10100339}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 9006883887804901364}
-  m_RootOrder: 0
+  m_Father: {fileID: 5906921365467543185}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &615595590800156088
 SkinnedMeshRenderer:
@@ -3073,6 +3075,20 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.60455835, y: -0.07320368, z: 0.32180458}
     m_Extent: {x: 0.36800283, y: 0.08540261, z: 0.73790973}
   m_DirtyAABB: 0
+--- !u!64 &1466659882983102282
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9035253894689382235}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 1
+  m_CookingOptions: 14
+  m_Mesh: {fileID: -4735245474628318203, guid: aa4636509aae7d548852c7b40e9270c0, type: 3}
 --- !u!1 &9146329624488756895
 GameObject:
   m_ObjectHideFlags: 0
