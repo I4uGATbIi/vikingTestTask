@@ -4,8 +4,20 @@ using UnityEngine;
 
 public class PlayerStats : UnitStats
 {
-    public static event HealthHandler playerHPisZero;
-    public static event HealthHandler playerDamageTaken;
+    public event HealthHandler playerHPisZero;
+    public event HealthHandler playerDamageTaken;
+    public event HealthHandler playerHealingTaken;
+
+    public override float CurrentHp
+    {
+        protected set
+        {
+            base.CurrentHp = value;
+            var playerTypeEvent = value < 0 ? playerDamageTaken : playerHealingTaken;
+            playerTypeEvent?.Invoke(this);
+        }
+    }
+
     public PlayerStats()
     {
         ResetStat();
@@ -20,15 +32,13 @@ public class PlayerStats : UnitStats
         base.ResetStat();
     }
 
-    public override void TakeDamage(float damage)
+    public override bool CheckIfDead()
     {
-        base.TakeDamage(damage);
-        playerDamageTaken?.Invoke(this);
-    }
-
-    public override void CheckIfDead()
-    {
-        base.CheckIfDead();
+        if (!base.CheckIfDead())
+        {
+            return false;
+        }
         playerHPisZero?.Invoke(this);
+        return true;
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
-    [SerializeField] private PlayerStats stats;
+    [SerializeField] public PlayerStats stats { get; private set; }
 
     public float turnSmoothTime = 0.2f;
     float turnSmoothVelocity;
@@ -15,19 +15,16 @@ public class PlayerControl : MonoBehaviour
     Animator animator;
     Transform cameraT;
 
-    private GameManager GM;
     [SerializeField] private GameObject weapon;
 
     void Awake()
     {
-        GM = GameObject.FindWithTag("GameManager").GetComponent<GameManager>();
         animator = GetComponent<Animator>();
         cameraT = Camera.main.transform;
         stats = new PlayerStats();
 
-        GameManager.StageChanged += OnStageChanged;
-        PlayerStats.playerDamageTaken += OnDamageTaken;
-        PlayerStats.playerHPisZero += Die;
+        stats.playerDamageTaken += OnDamageTaken;
+        stats.playerHPisZero += Die;
         weapon.GetComponent<WeaponAttack>().weaponCollision += OnWeaponCollision;
     }
 
@@ -39,6 +36,7 @@ public class PlayerControl : MonoBehaviour
         }
 
         other.gameObject.GetComponent<MonsterContoll>().GetDamage(stats.Damage);
+        Debug.Log($"{other.name} suffered {stats.Damage} from {name}");
     }
 
     void Update()
@@ -53,11 +51,6 @@ public class PlayerControl : MonoBehaviour
     private void Die(UnitStats stats)
     {
         animator.SetBool("isDead", true);
-    }
-
-    private void OnStageChanged(GameStage stage, bool isGamePaused)
-    {
-        enabled = !isGamePaused;
     }
 
     IEnumerator Attack()

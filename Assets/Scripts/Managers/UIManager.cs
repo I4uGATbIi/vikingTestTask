@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private GameObject mainMenuPanel;
     [SerializeField] private GameObject HUDPanel;
+    [SerializeField] private GameObject endGameMenu;
 
     private Image fillBar;
     private Text score;
@@ -32,14 +33,16 @@ public class UIManager : MonoBehaviour
 
         fillBar = HUDPanel.transform.Find("HealthUI").Find("FillBar").GetComponent<Image>();
         score = HUDPanel.transform.Find("Score").Find("Text").GetComponent<Text>();
-
-        PlayerStats.playerDamageTaken += OnPlayerTakesDamage;
         GameManager.StageChanged += OnStageChanged;
     }
 
-    void OnPlayerTakesDamage(UnitStats stats)
+    public void OnPlayerDamageTaken(PlayerStats playerStats)
     {
-        PlayerStats playerStats = (PlayerStats) stats;
+        UpdateHpBar(playerStats);
+    }
+
+    public void UpdateHpBar(PlayerStats playerStats)
+    {
         fillBar.fillAmount = playerStats.CurrentHp / playerStats.MaxHp;
     }
 
@@ -63,16 +66,20 @@ public class UIManager : MonoBehaviour
     {
         mainMenuPanel.SetActive(true);
         HUDPanel.SetActive(false);
+        endGameMenu.SetActive(false);
     }
 
     void PrepareHUD()
     {
         mainMenuPanel.SetActive(false);
         HUDPanel.SetActive(true);
+        endGameMenu.SetActive(false);
     }
 
     void PrepareEndGameMenu()
     {
-        Debug.Log("NEED TO MAKE END GAME MENU!");
+        mainMenuPanel.SetActive(false);
+        HUDPanel.SetActive(false);
+        endGameMenu.SetActive(true);
     }
 }

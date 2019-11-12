@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class MonsterContoll : MonoBehaviour
 {
     private NavMeshAgent navMeshAgent;
-    private MonsterStats monsterStats;
+    public MonsterStats monsterStats { get; private set; }
     private Animator animator;
 
     [SerializeField]
@@ -19,7 +19,6 @@ public class MonsterContoll : MonoBehaviour
         animator = GetComponent<Animator>();
         monsterStats.monsterDamageTaken += MonsterStats_monsterDamageTaken;
         monsterStats.monsterHPisZero += MonsterStats_monsterHPisZero;
-        GameManager.StageChanged += GameManager_StageChanged;
         navMeshAgent.speed = monsterStats.WalkSpeed;
         weapon.GetComponent<WeaponAttack>().weaponCollision += OnWeaponCollision;
     }
@@ -32,6 +31,7 @@ public class MonsterContoll : MonoBehaviour
         }
 
         other.gameObject.GetComponent<PlayerControl>().GetDamage(monsterStats.Damage);
+        Debug.Log($"{other.name} suffered {monsterStats.Damage} from {name}");
     }
 
     void Update()
@@ -56,11 +56,6 @@ public class MonsterContoll : MonoBehaviour
         if (Vector3.Distance(transform.position, GameObject.FindWithTag("Player").transform.position) <=
             navMeshAgent.stoppingDistance)
             animator.SetTrigger("isAttacking");
-    }
-
-    private void GameManager_StageChanged(GameStage changedStage, bool isGamePaused)
-    {
-        enabled = !isGamePaused;
     }
 
     private void MonsterStats_monsterHPisZero(UnitStats stats)

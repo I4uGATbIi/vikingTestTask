@@ -8,6 +8,7 @@ TagManager:
   - Terrain
   - Enemy
   - Weapon
+  - UIManager
   layers:
   - Default
   - TransparentFX

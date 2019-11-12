@@ -7,10 +7,26 @@ public abstract class UnitStats
     public delegate void HealthHandler(UnitStats stats);
     public static event HealthHandler HPisZero;
     public static event HealthHandler damageTaken;
+    public static event HealthHandler healingTaken;
 
     public float MaxHp { get; protected set; }
-    public float CurrentHp { get; protected set; }
-    
+    protected float currentHP;
+    public virtual float CurrentHp
+    {
+        get
+        {
+            return currentHP;
+        }
+        protected set
+        {
+            var typeEvent = value < currentHP ? damageTaken : healingTaken;
+            currentHP = value;
+            typeEvent?.Invoke(this);
+            if (currentHP > MaxHp)
+                currentHP = MaxHp;
+        }
+    }
+
     public float Damage { get; protected set; }
     public float WalkSpeed { get; protected set; }
     public float RunSpeed { get; protected set; }
@@ -19,7 +35,6 @@ public abstract class UnitStats
     {
         CurrentHp -= damage;
         CheckIfDead();
-        damageTaken?.Invoke(this);
     }
 
     public virtual void ResetStat()
@@ -27,12 +42,13 @@ public abstract class UnitStats
         CurrentHp = MaxHp;
     }
 
-    public virtual void CheckIfDead()
+    public virtual bool CheckIfDead()
     {
-        if(CurrentHp > 0)
+        if (CurrentHp > 0)
         {
-            return;
+            return false;
         }
         HPisZero?.Invoke(this);
+        return true;
     }
 }

@@ -7,14 +7,24 @@ public class MonsterStats : UnitStats
     public event HealthHandler monsterHPisZero;
     public event HealthHandler monsterDamageTaken;
 
+    public float TimesDied { get; private set; }
+
     public MonsterStats()
     {
+        TimesDied = 0;
         ResetStat();
+    }
+
+    public void ReviveStats()
+    {
+        MaxHp = 1 + TimesDied;
+        base.ResetStat();
     }
 
     public override void ResetStat()
     {
-        MaxHp++;
+        TimesDied = 0;
+        MaxHp = 1;
         Damage = 1;
         WalkSpeed = 1.5f;
         RunSpeed = 5;
@@ -27,9 +37,14 @@ public class MonsterStats : UnitStats
         monsterDamageTaken?.Invoke(this);
     }
 
-    public override void CheckIfDead()
+    public override bool CheckIfDead()
     {
-        base.CheckIfDead();
+        if(!base.CheckIfDead())
+        {
+            return false;
+        }
         monsterHPisZero?.Invoke(this);
+        TimesDied++;
+        return true;
     }
 }

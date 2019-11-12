@@ -12,6 +12,14 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameStage currentStage;
 
+    [SerializeField] private GameObject player;
+
+    [SerializeField] private List<GameObject> monsters;
+
+    [SerializeField] private Camera mainCam;
+
+    [SerializeField] private UIManager UIManager;
+
     public GameStage CurrentStage
     {
         get => currentStage;
@@ -27,7 +35,37 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
-        PlayerStats.playerHPisZero += OnPlayerDies;
+        StageChanged += GameManager_StageChanged;
+
+        if(mainCam == null)
+        {
+            mainCam = Camera.main;
+        }
+
+        if(player == null)
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
+        }
+        player.GetComponent<PlayerControl>().stats.playerHPisZero += OnPlayerDies;
+        player.GetComponent<PlayerControl>().stats.playerDamageTaken += OnPlayerDamageTaken;
+        player.GetComponent<PlayerControl>().stats.playerHealingTaken += Stats_playerHealingTaken;
+
+        if(UIManager == null)
+        {
+            UIManager = GameObject.FindGameObjectWithTag("UIManager").GetComponent<UIManager>();
+        }
+    }
+
+    private void Stats_playerHealingTaken(UnitStats stats)
+    {
+        UIManager.OnPlayerDamageTaken((PlayerStats)stats);
+    }
+
+    private void GameManager_StageChanged(GameStage changedStage, bool isGamePaused)
+    {
+        player.GetComponent<PlayerControl>().enabled = !isGamePaused;
+        monsters.ForEach(monster => monster.GetComponent<MonsterContoll>().enabled = !isGamePaused);
+        mainCam.GetComponent<ThirdPersonCamera>().enabled = !isGamePaused;
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode sceneMode)
@@ -39,6 +77,13 @@ public class GameManager : MonoBehaviour
     {
         CurrentStage = GameStage.Game;
         GameObject.FindWithTag("Player").transform.position = GetSpawnPosition();
+    }
+
+    public void RestartGame()
+    {
+        player.GetComponent<PlayerControl>().stats.ResetStat();
+        monsters.ForEach(monster => monster.GetComponent<MonsterContoll>().monsterStats.ResetStat());
+        StartGame();
     }
 
     public void ExitGame()
@@ -60,6 +105,11 @@ public class GameManager : MonoBehaviour
         float randZ = Random.Range(position.z, position.z + terrainData.size.z);
         float yVal = terrain.SampleHeight(new Vector3(randX, 0, randZ)) + 1;
         return new Vector3(randX, yVal, randZ);
+    }
+
+    private void OnPlayerDamageTaken(UnitStats stats)
+    {
+        UIManager.OnPlayerDamageTaken((PlayerStats)stats);
     }
 }
 
