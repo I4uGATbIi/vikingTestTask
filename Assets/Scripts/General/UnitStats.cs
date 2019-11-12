@@ -5,9 +5,9 @@ using UnityEngine;
 public abstract class UnitStats
 {
     public delegate void HealthHandler(UnitStats stats);
-    public static event HealthHandler HPisZero;
-    public static event HealthHandler damageTaken;
-    public static event HealthHandler healingTaken;
+    //public static event HealthHandler HPisZero;
+    //public static event HealthHandler damageTaken;
+    //public static event HealthHandler healingTaken;
 
     public float MaxHp { get; protected set; }
     protected float currentHP;
@@ -19,9 +19,9 @@ public abstract class UnitStats
         }
         protected set
         {
-            var typeEvent = value < currentHP ? damageTaken : healingTaken;
+            //var typeEvent = value < currentHP ? damageTaken : healingTaken;
             currentHP = value;
-            typeEvent?.Invoke(this);
+            //typeEvent?.Invoke(this);
             if (currentHP > MaxHp)
                 currentHP = MaxHp;
         }
@@ -48,7 +48,7 @@ public abstract class UnitStats
         {
             return false;
         }
-        HPisZero?.Invoke(this);
+        //HPisZero?.Invoke(this);
         return true;
     }
 }

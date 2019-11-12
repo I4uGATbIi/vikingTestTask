@@ -20,6 +20,17 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private UIManager UIManager;
 
+    private int score;
+    public int Score
+    {
+        get { return score; }
+        private set
+        {
+            score = value;
+            UIManager.UpdateScoreBar(score);
+        }
+    }
+
     public GameStage CurrentStage
     {
         get => currentStage;
@@ -37,12 +48,12 @@ public class GameManager : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
         StageChanged += GameManager_StageChanged;
 
-        if(mainCam == null)
+        if (mainCam == null)
         {
             mainCam = Camera.main;
         }
 
-        if(player == null)
+        if (player == null)
         {
             player = GameObject.FindGameObjectWithTag("Player");
         }
@@ -50,10 +61,26 @@ public class GameManager : MonoBehaviour
         player.GetComponent<PlayerControl>().stats.playerDamageTaken += OnPlayerDamageTaken;
         player.GetComponent<PlayerControl>().stats.playerHealingTaken += Stats_playerHealingTaken;
 
-        if(UIManager == null)
+        if (UIManager == null)
         {
             UIManager = GameObject.FindGameObjectWithTag("UIManager").GetComponent<UIManager>();
         }
+
+        InitMonsters();
+    }
+
+    void InitMonsters()
+    {
+        monsters.ForEach(monster =>
+        {
+            monster.GetComponent<MonsterContoll>().monsterStats.monsterHPisZero += MonsterStats_monsterHPisZero;
+            monster.transform.position = GetSpawnPosition();
+        });
+    }
+
+    private void MonsterStats_monsterHPisZero(UnitStats stats)
+    {
+        Score++;
     }
 
     private void Stats_playerHealingTaken(UnitStats stats)
@@ -76,7 +103,7 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         CurrentStage = GameStage.Game;
-        GameObject.FindWithTag("Player").transform.position = GetSpawnPosition();
+        Score = 0;
     }
 
     public void RestartGame()

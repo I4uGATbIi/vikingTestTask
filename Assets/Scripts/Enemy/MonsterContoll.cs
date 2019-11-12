@@ -55,7 +55,10 @@ public class MonsterContoll : MonoBehaviour
     {
         if (Vector3.Distance(transform.position, GameObject.FindWithTag("Player").transform.position) <=
             navMeshAgent.stoppingDistance)
+        {
+            transform.LookAt(GameObject.FindWithTag("Player").transform);
             animator.SetTrigger("isAttacking");
+        }
     }
 
     private void MonsterStats_monsterHPisZero(UnitStats stats)

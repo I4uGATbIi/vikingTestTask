@@ -46,6 +46,12 @@ public class UIManager : MonoBehaviour
         fillBar.fillAmount = playerStats.CurrentHp / playerStats.MaxHp;
     }
 
+    public void UpdateScoreBar(int score)
+    {
+        HUDPanel.transform.Find("Score").Find("Text").GetComponent<Text>().text = $"Score: {score}";
+        endGameMenu.transform.Find("Score").Find("Text").GetComponent<Text>().text = $"Score: {score}";
+    }
+
     void OnStageChanged(GameStage stage, bool isGamePaused)
     {
         switch (stage)

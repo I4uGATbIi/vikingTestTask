@@ -33,13 +33,15 @@ public class MonsterStats : UnitStats
 
     public override void TakeDamage(float damage)
     {
+        if (CurrentHp <= 0)
+            return;
         base.TakeDamage(damage);
         monsterDamageTaken?.Invoke(this);
     }
 
     public override bool CheckIfDead()
     {
-        if(!base.CheckIfDead())
+        if (!base.CheckIfDead())
         {
             return false;
         }
