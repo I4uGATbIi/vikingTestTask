@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class PlayerStats : UnitStats
 {
-    public event HealthHandler playerHPisZero;
-    public event HealthHandler playerDamageTaken;
-    public event HealthHandler playerHealingTaken;
+    public event StatsHandler playerHPisZero;
+    public event StatsHandler playerDamageTaken;
+    public event StatsHandler playerHealingTaken;
+    public event StatsHandler playerStaminaChanged;
 
     public override float CurrentHp
     {
@@ -18,12 +19,24 @@ public class PlayerStats : UnitStats
         }
     }
 
+    public override float CurrentStamina
+    {
+        get => base.CurrentStamina; protected set
+        {
+            base.CurrentStamina = value;
+            playerStaminaChanged?.Invoke(this);
+        }
+    }
+
     public override void ResetStat()
     {
         MaxHp = 20;
         Damage = 1;
-        WalkSpeed = 2;
+        WalkSpeed = 3.2f;
         RunSpeed = 5;
+        StaminaRegen = 1;
+        StaminaSuff = 5;
+        MaxStamina = 20;
         base.ResetStat();
     }
 

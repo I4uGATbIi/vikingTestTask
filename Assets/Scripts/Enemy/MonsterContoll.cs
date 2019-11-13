@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class MonsterContoll : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class MonsterContoll : MonoBehaviour
 
     [SerializeField]
     private GameObject weapon;
+
+    public Image HPBar { get; private set; }
 
     private void Awake()
     {
@@ -22,6 +25,7 @@ public class MonsterContoll : MonoBehaviour
         navMeshAgent.speed = monsterStats.WalkSpeed;
         weapon.GetComponent<WeaponAttack>().weaponCollision += OnWeaponCollision;
         ResetAnimVars();
+        HPBar = transform.Find("Canvas").Find("HealthUI").Find("FillBar").GetComponent<Image>();
     }
 
     private void OnWeaponCollision(Collider other)
@@ -37,12 +41,19 @@ public class MonsterContoll : MonoBehaviour
 
     void Update()
     {
+        if(animator.GetBool("isAttacking") || animator.GetBool("isDead"))
+        {
+            navMeshAgent.speed = 0;
+            return;
+        }
         Move();
         AttackPlayer();
     }
 
     void Move()
     {
+        if (navMeshAgent.speed <= 0)
+            navMeshAgent.speed = monsterStats.WalkSpeed;
         navMeshAgent.SetDestination(GameObject.FindWithTag("Player").transform.position);
         animator.SetFloat("moveSpeed", navMeshAgent.velocity.magnitude);
     }

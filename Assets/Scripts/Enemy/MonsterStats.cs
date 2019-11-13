@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class MonsterStats : UnitStats
 {
-    public event HealthHandler monsterHPisZero;
-    public event HealthHandler monsterDamageTaken;
+    public event StatsHandler monsterHPisZero;
+    public event StatsHandler monsterDamageTaken;
 
     public float TimesDied { get; private set; }
 
@@ -20,7 +20,7 @@ public class MonsterStats : UnitStats
         TimesDied = 0;
         MaxHp = 1;
         Damage = 1;
-        WalkSpeed = 1.5f;
+        WalkSpeed = 3f;
         RunSpeed = 5;
         base.ResetStat();
     }

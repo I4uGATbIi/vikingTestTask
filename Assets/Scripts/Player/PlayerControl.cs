@@ -97,9 +97,17 @@ public class PlayerControl : MonoBehaviour
                                         ref turnSmoothVelocity, turnSmoothTime);
         }
 
-        bool running = Input.GetKey(KeyCode.LeftShift);
+        bool running = Input.GetKey(KeyCode.LeftShift) && !stats.isStaminaEmpty;
         float targetSpeed = ((running) ? stats.RunSpeed : stats.WalkSpeed) * inputDir.magnitude;
         currentSpeed = Mathf.SmoothDamp(currentSpeed, targetSpeed, ref speedSmoothVelocity, speedSmoothTime);
+        if (running)
+        {
+            stats.SpendStamina();
+        }
+        else
+        {
+            stats.RegenerateStamina();
+        }
 
         animator.SetFloat("moveSpeed", inputDir == Vector2.zero ? 0 : running ? 1 : 0.5f);
         transform.Translate(transform.forward * currentSpeed * Time.deltaTime, Space.World);
@@ -108,5 +116,10 @@ public class PlayerControl : MonoBehaviour
     public void GetDamage(float damage)
     {
         stats.TakeDamage(damage);
+    }
+
+    public void Heal(float healAmount)
+    {
+        stats.Heal(healAmount);
     }
 }

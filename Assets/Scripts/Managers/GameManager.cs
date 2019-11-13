@@ -15,6 +15,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject player;
 
     [SerializeField] private List<GameObject> monsters;
+    [SerializeField] private Queue<HPSphere> hpSpheres;
+
+    [SerializeField] private GameObject HPSpherePool;
 
     [SerializeField] private Camera mainCam;
 
@@ -49,6 +52,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        hpSpheres = new Queue<HPSphere>();
         SceneManager.sceneLoaded += OnSceneLoaded;
         StageChanged += GameManager_StageChanged;
 
@@ -65,6 +69,7 @@ public class GameManager : MonoBehaviour
         player.GetComponent<PlayerControl>().stats.playerHPisZero += OnPlayerDies;
         player.GetComponent<PlayerControl>().stats.playerDamageTaken += OnPlayerDamageTaken;
         player.GetComponent<PlayerControl>().stats.playerHealingTaken += Stats_playerHealingTaken;
+        player.GetComponent<PlayerControl>().stats.playerStaminaChanged += Stats_playerStaminaChanged;
 
         if (UIManager == null)
         {
@@ -72,6 +77,12 @@ public class GameManager : MonoBehaviour
         }
 
         InitMonsters();
+        InitHPSpherePool();
+    }
+
+    private void Stats_playerStaminaChanged(UnitStats stats)
+    {
+        UIManager.UpdateStaminaBar((PlayerStats)stats);
     }
 
     void InitMonsters()
@@ -79,19 +90,30 @@ public class GameManager : MonoBehaviour
         monsters.ForEach(monster =>
         {
             monster.GetComponent<MonsterContoll>().monsterStats.monsterHPisZero += MonsterStats_monsterHPisZero;
+            monster.GetComponent<MonsterContoll>().monsterStats.monsterDamageTaken += MonsterStats_monsterDamageTaken; ;
             monster.transform.position = GetSpawnPosition();
         });
+    }
+
+    private void MonsterStats_monsterDamageTaken(UnitStats stats)
+    {
+        UIManager.UpdateMonsterHPBar((MonsterStats)stats);
     }
 
     private void MonsterStats_monsterHPisZero(UnitStats stats)
     {
         Score++;
+        var hpSphere = hpSpheres.Dequeue();
+        hpSphere.transform.SetParent(null);
+        hpSphere.transform.position = stats.GameObjectBind.transform.position + new Vector3(0, 1, 0);
+        hpSphere.enabled = true;
+        hpSphere.gameObject.SetActive(true);
         StartCoroutine(ReviveMonster(stats.GameObjectBind));
     }
 
     private void Stats_playerHealingTaken(UnitStats stats)
     {
-        UIManager.OnPlayerDamageTaken((PlayerStats) stats);
+        UIManager.OnPlayerDamageTaken((PlayerStats)stats);
     }
 
     private void GameManager_StageChanged(GameStage changedStage, bool isGamePaused)
@@ -104,6 +126,24 @@ public class GameManager : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode sceneMode)
     {
         CurrentStage = GameStage.MainMenu;
+    }
+
+    void InitHPSpherePool()
+    {
+        for (var i = 0; i < HPSpherePool.transform.childCount; i++)
+        {
+            var hpSphere = HPSpherePool.transform.GetChild(i).GetComponent<HPSphere>();
+            hpSpheres.Enqueue(hpSphere);
+            hpSphere.transform.position = hpSphere.transform.parent.transform.position;
+            hpSphere.sphereDeactivate += HpSphere_sphereDeactivate;
+        }
+    }
+
+    private void HpSphere_sphereDeactivate(HPSphere hpSphere)
+    {
+        hpSpheres.Enqueue(hpSphere);
+        hpSphere.transform.SetParent(HPSpherePool.transform);
+        hpSphere.transform.position = hpSphere.transform.parent.transform.position;
     }
 
     public void StartGame()
@@ -148,7 +188,7 @@ public class GameManager : MonoBehaviour
 
     private void OnPlayerDamageTaken(UnitStats stats)
     {
-        UIManager.OnPlayerDamageTaken((PlayerStats) stats);
+        UIManager.OnPlayerDamageTaken((PlayerStats)stats);
     }
 
     IEnumerator ReviveMonster(GameObject monster)
@@ -160,6 +200,7 @@ public class GameManager : MonoBehaviour
         monsterContol.monsterStats.ReviveStats();
         monsterContol.ResetAnimVars();
         monsterContol.enabled = true;
+        UIManager.UpdateMonsterHPBar(monsterContol.monsterStats);
     }
 
     private Vector3 GetMonsterRevivalPosition()

@@ -11,7 +11,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject HUDPanel;
     [SerializeField] private GameObject endGameMenu;
 
-    private Image fillBar;
+    private Image hpFillBar;
+    private Image staminaFillBar;
     private Text score;
 
     private void Awake()
@@ -31,7 +32,8 @@ public class UIManager : MonoBehaviour
             HUDPanel = GameObject.Find("HUD");
         }
 
-        fillBar = HUDPanel.transform.Find("HealthUI").Find("FillBar").GetComponent<Image>();
+        hpFillBar = HUDPanel.transform.Find("HealthUI").Find("FillBar").GetComponent<Image>();
+        staminaFillBar = HUDPanel.transform.Find("StaminaUI").Find("FillBar").GetComponent<Image>();
         score = HUDPanel.transform.Find("Score").Find("Text").GetComponent<Text>();
         GameManager.StageChanged += OnStageChanged;
     }
@@ -43,7 +45,17 @@ public class UIManager : MonoBehaviour
 
     public void UpdateHpBar(PlayerStats playerStats)
     {
-        fillBar.fillAmount = playerStats.CurrentHp / playerStats.MaxHp;
+        hpFillBar.fillAmount = playerStats.CurrentHp / playerStats.MaxHp;
+    }
+
+    public void UpdateStaminaBar(PlayerStats playerStats)
+    {
+        staminaFillBar.fillAmount = playerStats.CurrentStamina / playerStats.MaxStamina;
+    }
+
+    public void UpdateMonsterHPBar(MonsterStats monsterStats)
+    {
+        monsterStats.GameObjectBind.GetComponent<MonsterContoll>().HPBar.fillAmount = monsterStats.CurrentHp / monsterStats.MaxHp;
     }
 
     public void UpdateScoreBar(int score)
