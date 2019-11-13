@@ -20,10 +20,14 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private UIManager UIManager;
 
+    [SerializeField] private float monsterRevivalTime = 3f;
+    [SerializeField] private float monsterRevivalRadius = 30f;
+
     private int score;
+
     public int Score
     {
-        get { return score; }
+        get => score;
         private set
         {
             score = value;
@@ -57,6 +61,7 @@ public class GameManager : MonoBehaviour
         {
             player = GameObject.FindGameObjectWithTag("Player");
         }
+
         player.GetComponent<PlayerControl>().stats.playerHPisZero += OnPlayerDies;
         player.GetComponent<PlayerControl>().stats.playerDamageTaken += OnPlayerDamageTaken;
         player.GetComponent<PlayerControl>().stats.playerHealingTaken += Stats_playerHealingTaken;
@@ -81,11 +86,12 @@ public class GameManager : MonoBehaviour
     private void MonsterStats_monsterHPisZero(UnitStats stats)
     {
         Score++;
+        StartCoroutine(ReviveMonster(stats.GameObjectBind));
     }
 
     private void Stats_playerHealingTaken(UnitStats stats)
     {
-        UIManager.OnPlayerDamageTaken((PlayerStats)stats);
+        UIManager.OnPlayerDamageTaken((PlayerStats) stats);
     }
 
     private void GameManager_StageChanged(GameStage changedStage, bool isGamePaused)
@@ -109,7 +115,13 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         player.GetComponent<PlayerControl>().stats.ResetStat();
-        monsters.ForEach(monster => monster.GetComponent<MonsterContoll>().monsterStats.ResetStat());
+        player.GetComponent<PlayerControl>().ResetAnimVars();
+        monsters.ForEach(monster =>
+        {
+            monster.GetComponent<MonsterContoll>().monsterStats.ResetStat();
+            monster.GetComponent<MonsterContoll>().ResetAnimVars();
+            monster.transform.position = GetSpawnPosition();
+        });
         StartGame();
     }
 
@@ -136,7 +148,28 @@ public class GameManager : MonoBehaviour
 
     private void OnPlayerDamageTaken(UnitStats stats)
     {
-        UIManager.OnPlayerDamageTaken((PlayerStats)stats);
+        UIManager.OnPlayerDamageTaken((PlayerStats) stats);
+    }
+
+    IEnumerator ReviveMonster(GameObject monster)
+    {
+        yield return new WaitForSeconds(monster.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length +
+                                        monsterRevivalTime);
+        monster.transform.position = GetMonsterRevivalPosition();
+        var monsterContol = monster.GetComponent<MonsterContoll>();
+        monsterContol.monsterStats.ReviveStats();
+        monsterContol.ResetAnimVars();
+        monsterContol.enabled = true;
+    }
+
+    private Vector3 GetMonsterRevivalPosition()
+    {
+        Terrain terrain = GameObject.FindWithTag("Terrain").GetComponent<Terrain>();
+        float randX = Random.Range(player.transform.position.x - monsterRevivalRadius,
+            player.transform.position.x + monsterRevivalRadius);
+        float randZ = Random.Range(player.transform.position.z - monsterRevivalRadius,
+            player.transform.position.z + monsterRevivalRadius);
+        return new Vector3(randX, terrain.SampleHeight(new Vector3(randX, 0, randZ)) + 1, randZ);
     }
 }
 

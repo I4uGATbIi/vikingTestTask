@@ -15,17 +15,18 @@ public class MonsterContoll : MonoBehaviour
     private void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
-        monsterStats = new MonsterStats();
+        monsterStats = new MonsterStats(gameObject);
         animator = GetComponent<Animator>();
         monsterStats.monsterDamageTaken += MonsterStats_monsterDamageTaken;
         monsterStats.monsterHPisZero += MonsterStats_monsterHPisZero;
         navMeshAgent.speed = monsterStats.WalkSpeed;
         weapon.GetComponent<WeaponAttack>().weaponCollision += OnWeaponCollision;
+        ResetAnimVars();
     }
 
     private void OnWeaponCollision(Collider other)
     {
-        if (!other.CompareTag("Player") || !animator.GetBool("isAttacking"))
+        if (!other.CompareTag("Player") || !animator.GetBool("isAttacking") )
         {
             return;
         }
@@ -77,5 +78,13 @@ public class MonsterContoll : MonoBehaviour
         animator.SetBool("isDamaged", true);
         yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
         animator.SetBool("isDamaged", false);
+    }
+    
+    public void ResetAnimVars()
+    {
+        animator.SetBool("isAttacking", false);
+        animator.SetBool("isDamaged", false);
+        animator.SetBool("isDead", false);
+        animator.SetFloat("moveSpeed", 0f);
     }
 }

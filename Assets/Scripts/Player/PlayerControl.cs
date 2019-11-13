@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
-    [SerializeField] public PlayerStats stats { get; private set; }
+    public PlayerStats stats { get; private set; }
 
     public float turnSmoothTime = 0.2f;
     float turnSmoothVelocity;
@@ -21,11 +21,20 @@ public class PlayerControl : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         cameraT = Camera.main.transform;
-        stats = new PlayerStats();
+        stats = new PlayerStats(gameObject);
 
         stats.playerDamageTaken += OnDamageTaken;
         stats.playerHPisZero += Die;
         weapon.GetComponent<WeaponAttack>().weaponCollision += OnWeaponCollision;
+        ResetAnimVars();
+    }
+
+    public void ResetAnimVars()
+    {
+        animator.SetBool("isAttacking", false);
+        animator.SetBool("isDamageTaken", false);
+        animator.SetBool("isDead", false);
+        animator.SetFloat("moveSpeed", 0f);
     }
 
     private void OnWeaponCollision(Collider other)
@@ -41,10 +50,15 @@ public class PlayerControl : MonoBehaviour
 
     void Update()
     {
+        if (animator.GetBool("isDead"))
+        {
+            return;
+        }
         if (Input.GetButton("Fire1"))
         {
             StartCoroutine(Attack());
         }
+
         Move();
     }
 
@@ -67,9 +81,8 @@ public class PlayerControl : MonoBehaviour
 
     IEnumerator PlayDamageAnim()
     {
-        animator.SetBool("isDamageTaken", true);
+        animator.SetTrigger("isDamageTaken");
         yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
-        animator.SetBool("isDamageTaken", false);
     }
 
     void Move()

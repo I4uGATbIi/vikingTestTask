@@ -4,11 +4,9 @@ using UnityEngine;
 
 public abstract class UnitStats
 {
+    public GameObject GameObjectBind { get; protected set; }
+    
     public delegate void HealthHandler(UnitStats stats);
-    //public static event HealthHandler HPisZero;
-    //public static event HealthHandler damageTaken;
-    //public static event HealthHandler healingTaken;
-
     public float MaxHp { get; protected set; }
     protected float currentHP;
     public virtual float CurrentHp
@@ -19,9 +17,7 @@ public abstract class UnitStats
         }
         protected set
         {
-            //var typeEvent = value < currentHP ? damageTaken : healingTaken;
             currentHP = value;
-            //typeEvent?.Invoke(this);
             if (currentHP > MaxHp)
                 currentHP = MaxHp;
         }
@@ -31,6 +27,12 @@ public abstract class UnitStats
     public float WalkSpeed { get; protected set; }
     public float RunSpeed { get; protected set; }
 
+    public UnitStats(GameObject gameObjectBind)
+    {
+        GameObjectBind = gameObjectBind;
+        ResetStat();
+    }
+    
     public virtual void TakeDamage(float damage)
     {
         CurrentHp -= damage;
@@ -48,7 +50,6 @@ public abstract class UnitStats
         {
             return false;
         }
-        //HPisZero?.Invoke(this);
         return true;
     }
 }

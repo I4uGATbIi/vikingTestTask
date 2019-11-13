@@ -9,12 +9,6 @@ public class MonsterStats : UnitStats
 
     public float TimesDied { get; private set; }
 
-    public MonsterStats()
-    {
-        TimesDied = 0;
-        ResetStat();
-    }
-
     public void ReviveStats()
     {
         MaxHp = 1 + TimesDied;
@@ -48,5 +42,9 @@ public class MonsterStats : UnitStats
         monsterHPisZero?.Invoke(this);
         TimesDied++;
         return true;
+    }
+
+    public MonsterStats(GameObject gameObjectBind) : base(gameObjectBind)
+    {
     }
 }

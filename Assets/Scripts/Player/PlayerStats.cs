@@ -12,15 +12,10 @@ public class PlayerStats : UnitStats
     {
         protected set
         {
+            var playerTypeEvent = value < CurrentHp ? playerDamageTaken : playerHealingTaken;
             base.CurrentHp = value;
-            var playerTypeEvent = value < 0 ? playerDamageTaken : playerHealingTaken;
             playerTypeEvent?.Invoke(this);
         }
-    }
-
-    public PlayerStats()
-    {
-        ResetStat();
     }
 
     public override void ResetStat()
@@ -38,7 +33,12 @@ public class PlayerStats : UnitStats
         {
             return false;
         }
+
         playerHPisZero?.Invoke(this);
         return true;
+    }
+
+    public PlayerStats(GameObject gameObjectBind) : base(gameObjectBind)
+    {
     }
 }

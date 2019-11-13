@@ -2987,6 +2987,7 @@ GameObject:
   - component: {fileID: 5496221819217577248}
   - component: {fileID: 615595590800156088}
   - component: {fileID: 1466659882983102282}
+  - component: {fileID: 2066941747}
   m_Layer: 0
   m_Name: BattleAxe_GEO
   m_TagString: Weapon
@@ -3089,6 +3090,18 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 14
   m_Mesh: {fileID: -4735245474628318203, guid: aa4636509aae7d548852c7b40e9270c0, type: 3}
+--- !u!114 &2066941747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9035253894689382235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfc0996e5e33f134abdbff27aedea593, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &9146329624488756895
 GameObject:
   m_ObjectHideFlags: 0
